@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RE-VLM: Event-Augmented Vision-Language Model for Scene Understanding</title>
+  <meta name="description" content="RE-VLM is the first dual-stream vision-language model that jointly leverages RGB images and event streams for robust scene understanding across both normal and challenging conditions. CVPR 2026." />
+  <meta name="keywords" content="RE-VLM, Event Camera, Vision-Language Model, Scene Understanding, CVPR 2026, Multimodal, Event-Augmented" />
+
+  <meta property="og:title" content="RE-VLM: Event-Augmented Vision-Language Model" />
+  <meta property="og:description" content="The first dual-stream VLM fusing RGB images and event streams for robust scene understanding. CVPR 2026." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="venue-badge">
+        <span class="badge-icon"><i class="fa-solid fa-award"></i></span>
+        <span>CVPR 2026</span>
+      </div>
+      <h1 class="title">
+        <span class="title-highlight">RE-VLM</span>: Event-Augmented Vision-Language Model for Scene Understanding
+      </h1>
+      <div class="authors">
+        <span class="author">Author 1<sup>1</sup></span>
+        <span class="author">Author 2<sup>1</sup></span>
+        <span class="author">Author 3<sup>2</sup></span>
+        <span class="author">Author 4<sup>1</sup></span>
+        <span class="author">Author 5<sup>2</sup></span>
+      </div>
+      <div class="affiliations">
+        <span class="affiliation"><sup>1</sup>University A</span>
+        <span class="affiliation"><sup>2</sup>University B</span>
+      </div>
+      <div class="hero-links">
+        <a href="#" class="hero-btn"><i class="fa-solid fa-file-pdf"></i> Paper</a>
+        <a href="#" class="hero-btn"><i class="fa-brands fa-github"></i> Code</a>
+        <a href="#" class="hero-btn"><i class="fa-solid fa-database"></i> Dataset</a>
+        <a href="#" class="hero-btn"><i class="fa-solid fa-video"></i> Video</a>
+        <a href="#" class="hero-btn"><i class="fa-solid fa-quote-left"></i> BibTeX</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser Figure -->
+  <section class="teaser">
+    <div class="container">
+      <div class="teaser-figure">
+        <div class="figure-placeholder teaser-placeholder">
+          <div class="teaser-comparison">
+            <div class="teaser-col">
+              <div class="teaser-img-placeholder rgb-only">
+                <div class="modality-label">QwenVL <span class="tag-rgb">RGB-only</span></div>
+                <div class="placeholder-content">
+                  <i class="fa-solid fa-image"></i>
+                  <p>Struggles with low dynamic range, missing the pedestrian and crosswalk</p>
+                </div>
+              </div>
+            </div>
+            <div class="teaser-col">
+              <div class="teaser-img-placeholder event-only">
+                <div class="modality-label">EventGPT <span class="tag-event">Event-only</span></div>
+                <div class="placeholder-content">
+                  <i class="fa-solid fa-bolt"></i>
+                  <p>Captures structure and motion but lacks color and texture</p>
+                </div>
+              </div>
+            </div>
+            <div class="teaser-col highlight-col">
+              <div class="teaser-img-placeholder ours">
+                <div class="modality-label">RE-VLM <span class="tag-ours">RGB+Event</span></div>
+                <div class="placeholder-content">
+                  <i class="fa-solid fa-star"></i>
+                  <p>Complete description: green light, pedestrian, crosswalk, vehicles</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="figure-caption">
+          <strong>Figure 1.</strong> Illustration of RGB-Event complementarity in a challenging low-light scene.
+          RGB-only VLM misses the pedestrian and crosswalk. Event-only VLM captures motion but lacks color.
+          Our <strong>RE-VLM</strong> provides a complete, accurate description by fusing both modalities.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section" id="abstract">
+    <div class="container">
+      <h2 class="section-title">Abstract</h2>
+      <div class="abstract-content">
+        <p>
+          Conventional vision-language models (VLMs) struggle to interpret scenes captured under adverse conditions
+          (e.g., low light, high dynamic range, or fast motion) because standard RGB images degrade in such environments.
+          Event cameras provide a complementary modality: they asynchronously record per-pixel brightness changes with
+          high temporal resolution and wide dynamic range, preserving motion cues where frames fail.
+        </p>
+        <p>
+          We propose <strong>RE-VLM</strong>, the first dual-stream vision-language model that jointly leverages RGB images and event
+          streams for robust scene understanding across both normal and challenging conditions. RE-VLM employs parallel
+          RGB and event encoders together with a progressive training strategy that aligns heterogeneous visual features
+          with language. To address the scarcity of RGB-Event-Text supervision, we further propose a <em>graph-driven pipeline</em>
+          that converts synchronized RGB-Event streams into verifiable scene graphs, from which we synthesize captions
+          and question–answer (QA) pairs.
+        </p>
+        <p>
+          To develop and evaluate RE-VLM, we construct two datasets: <strong>PEOD-Chat</strong>, targeting illumination-challenged
+          scenes, and <strong>RGBE-Chat</strong>, covering diverse scenarios. On captioning and VQA benchmarks, RE-VLM consistently
+          outperforms state-of-the-art RGB-only and event-only models with comparable parameter counts, with particularly
+          large gains under challenging conditions.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Contributions -->
+  <section class="section section-alt" id="contributions">
+    <div class="container">
+      <h2 class="section-title">Key Contributions</h2>
+      <div class="contributions-grid">
+        <div class="contribution-card">
+          <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <h3>Dual-Stream VLM</h3>
+          <p>First VLM to fuse static RGB cues (texture/appearance) with dynamic event cues (motion/HDR), using a progressive training regimen for effective modality alignment.</p>
+        </div>
+        <div class="contribution-card">
+          <div class="card-icon"><i class="fa-solid fa-diagram-project"></i></div>
+          <h3>Graph-Driven Data Pipeline</h3>
+          <p>A novel graph-driven data generation pipeline that synthesizes verifiable scene descriptions and QA pairs from synchronized RGB-Event inputs, addressing the RGB-Event-Text data scarcity.</p>
+        </div>
+        <div class="contribution-card">
+          <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>State-of-the-Art Performance</h3>
+          <p>RE-VLM outperforms strong RGB-only and event-only baselines (including models with 2&times; more parameters) with notable gains in caption fidelity under adverse conditions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method Overview -->
+  <section class="section" id="method">
+    <div class="container">
+      <h2 class="section-title">Method</h2>
+
+      <div class="method-subsection">
+        <h3 class="subsection-title">Overall Framework</h3>
+        <p class="method-text">
+          RE-VLM consists of two main components: (1) a <em>graph-driven data generation pipeline</em> that converts
+          synchronized RGB-Event streams into structured scene graphs for synthesizing training data, and (2) a
+          <em>dual-stream model architecture</em> with parallel RGB and event encoders, a Spatio-Temporal Alignment
+          Module (STAM), and an LLM decoder.
+        </p>
+        <div class="figure-block">
+          <div class="figure-placeholder arch-placeholder">
+            <div class="arch-diagram">
+              <div class="arch-left">
+                <div class="arch-box data-box">
+                  <div class="arch-label">Data Pipeline</div>
+                  <div class="arch-flow">
+                    <div class="flow-item">RGB Frame</div>
+                    <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                    <div class="flow-item">RGB Graph</div>
+                    <div class="flow-arrow-merge">
+                      <i class="fa-solid fa-arrow-down-long"></i>
+                    </div>
+                  </div>
+                  <div class="arch-flow">
+                    <div class="flow-item">Event Stream</div>
+                    <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                    <div class="flow-item">Event Graph</div>
+                    <div class="flow-arrow-merge">
+                      <i class="fa-solid fa-arrow-down-long"></i>
+                    </div>
+                  </div>
+                  <div class="flow-item merge-item">Fusion Graph</div>
+                  <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                  <div class="flow-item output-item">Captions &amp; VQA</div>
+                </div>
+              </div>
+              <div class="arch-right">
+                <div class="arch-box model-box">
+                  <div class="arch-label">RE-VLM Architecture</div>
+                  <div class="model-components">
+                    <div class="model-row">
+                      <div class="component rgb-comp">RGB Encoder</div>
+                      <div class="component event-comp">Event Encoder</div>
+                    </div>
+                    <div class="model-row">
+                      <div class="component adapter-comp">RGB Adapter</div>
+                      <div class="component stam-comp">STAM</div>
+                      <div class="component adapter-comp">Event Adapter</div>
+                    </div>
+                    <div class="model-row">
+                      <div class="component llm-comp">Large Language Model (LLM)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="figure-caption">
+            <strong>Figure 2.</strong> Overview of RE-VLM. <em>Left:</em> Graph-driven pipeline converts synchronized RGB frames and event streams
+            into a fused graph for synthesizing caption and QA supervision. <em>Right:</em> The RE-VLM model fuses static RGB appearance
+            with dynamic event cues for robust captioning and VQA.
+          </p>
+        </div>
+      </div>
+
+      <div class="method-subsection">
+        <h3 class="subsection-title">Graph-Driven Data Generation</h3>
+        <p class="method-text">
+          To address the scarcity of RGB-Event-Text training data, we introduce a degradation-adaptive data generation pipeline.
+          A scene graph serves as a verifiable intermediate representation, explicitly encoding degradation cues to guide modality weighting.
+        </p>
+        <div class="pipeline-steps">
+          <div class="pipeline-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Event Graph Generation</h4>
+              <p>Locate each RGB keyframe, select an N&times;33ms event window, reconstruct into grayscale frames, and generate a structured description following subject&ndash;motion&ndash;place&ndash;relation schema.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>RGB Graph Generation</h4>
+              <p>Build the RGB graph on the synchronized keyframe, focusing on appearance and static structure (color, texture, shape), while annotating degradation phenomena.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Degradation-Aware Fusion</h4>
+              <p>LLM-based fusion that arbitrates between event and RGB graphs based on degradation labels, using field-level consensus and confidence scoring.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Caption &amp; QA Synthesis</h4>
+              <p>Feed the fused graph into a text-generation model to produce captions and up to three VQA items per sample, followed by human-audited quality correction.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="method-subsection">
+        <h3 class="subsection-title">Progressive Training Strategy</h3>
+        <p class="method-text">
+          RE-VLM adopts a concise three-stage curriculum that first grounds the event stream to language, then aligns
+          it with the RGB representation via STAM, and finally performs lightweight instruction tuning on the LLM.
+        </p>
+        <div class="training-stages">
+          <div class="stage">
+            <div class="stage-header">
+              <span class="stage-num">Stage 1</span>
+              <span class="stage-name">Event–Language Alignment</span>
+            </div>
+            <p>Train event encoder and adapter on Event-Text caption pairs while keeping LLM and RGB branch frozen.</p>
+            <div class="stage-meta">
+              <span><i class="fa-solid fa-database"></i> 1,300K pairs</span>
+              <span><i class="fa-solid fa-sliders"></i> LR: 1&times;10<sup>-4</sup></span>
+            </div>
+          </div>
+          <div class="stage-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          <div class="stage">
+            <div class="stage-header">
+              <span class="stage-num">Stage 2</span>
+              <span class="stage-name">Event–RGB Alignment</span>
+            </div>
+            <p>Align event branch with frozen RGB branch using STAM module and relation losses.</p>
+            <div class="stage-meta">
+              <span><i class="fa-solid fa-database"></i> 600K pairs</span>
+              <span><i class="fa-solid fa-sliders"></i> LR: 1&times;10<sup>-4</sup></span>
+            </div>
+          </div>
+          <div class="stage-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          <div class="stage">
+            <div class="stage-header">
+              <span class="stage-num">Stage 3</span>
+              <span class="stage-name">Instruction Tuning</span>
+            </div>
+            <p>Freeze visual branches and STAM; attach LoRA adapters to LLM for supervised fine-tuning.</p>
+            <div class="stage-meta">
+              <span><i class="fa-solid fa-database"></i> 120K samples</span>
+              <span><i class="fa-solid fa-sliders"></i> LR: 2&times;10<sup>-4</sup></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Datasets -->
+  <section class="section section-alt" id="datasets">
+    <div class="container">
+      <h2 class="section-title">Datasets</h2>
+      <p class="method-text center-text">
+        We construct two multimodal dialogue benchmarks tailored for challenging illumination and general scenes.
+      </p>
+      <div class="dataset-cards">
+        <div class="dataset-card">
+          <div class="dataset-header peod-header">
+            <h3>PEOD-Chat</h3>
+            <span class="dataset-size">11K samples</span>
+          </div>
+          <div class="dataset-body">
+            <p>Targeting <strong>illumination-challenged</strong> scenes (low light, overexposure, motion blur).</p>
+            <ul>
+              <li>Source: PEOD dataset</li>
+              <li>Test split: 1,750 samples</li>
+              <li>60% adverse imaging, 40% normal illumination</li>
+              <li>Human-corrected text supervision</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-header rgbe-header">
+            <h3>RGBE-Chat</h3>
+            <span class="dataset-size">113.7K samples</span>
+          </div>
+          <div class="dataset-body">
+            <p>Covering <strong>diverse general scenarios</strong> from multiple event camera datasets.</p>
+            <ul>
+              <li>Sources: RGBE-ImageNet (60K), DSEC (12K), DDD17 (1.7K), RGBE-SEG (15K), MVSEC (11K), M3ED (14K)</li>
+              <li>Test split: 2,047 samples</li>
+              <li>In-the-wild scenes with strict sequence-level split</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-block">
+        <p class="table-title">Table 1. Manual QA corrections on PEOD samples</p>
+        <p class="table-subtitle">Human-audited correction rate comparing an RGB-only generation baseline with our method; lower is better.</p>
+        <table class="results-table compact-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Correction Rate</th>
+              <th>Correction Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>RGB VLM [EventGPT]</td>
+              <td>54.2%</td>
+              <td>463</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>Ours</strong></td>
+              <td><strong>18.1%</strong></td>
+              <td><strong>155</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="section" id="results">
+    <div class="container">
+      <h2 class="section-title">Results</h2>
+
+      <div class="results-subsection">
+        <h3 class="subsection-title">Comparison with State-of-the-Art</h3>
+        <p class="method-text">
+          We report LLM-judge scores for Caption and VQA on both benchmarks. RE-VLM attains the best performance across
+          all metrics, with particularly large gains on illumination-challenged PEOD-Chat.
+        </p>
+
+        <div class="table-block">
+          <p class="table-title">Table 3. Results on PEOD-Chat and RGBE-Chat</p>
+          <p class="table-subtitle">LLM-judge scores for Caption (CI, DO, CU) and VQA (Ave, Acc). (*) denotes fine-tuned variants.</p>
+          <div class="table-wrapper">
+            <table class="results-table main-table">
+              <thead>
+                <tr>
+                  <th rowspan="2">Input</th>
+                  <th rowspan="2">Model</th>
+                  <th rowspan="2">Params</th>
+                  <th colspan="4" class="group-header peod-group">PEOD-Chat</th>
+                  <th colspan="4" class="group-header rgbe-group">RGBE-Chat</th>
+                </tr>
+                <tr>
+                  <th>CI</th>
+                  <th>DO</th>
+                  <th>CU</th>
+                  <th>Acc</th>
+                  <th>CI</th>
+                  <th>DO</th>
+                  <th>CU</th>
+                  <th>Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="5" class="input-cell">RGB-only</td>
+                  <td>Qwen2.5-VL</td>
+                  <td>3B</td>
+                  <td>2.47</td><td>2.03</td><td>3.04</td><td>0.52</td>
+                  <td>3.34</td><td>2.70</td><td>3.64</td><td>0.66</td>
+                </tr>
+                <tr>
+                  <td>InternVL2</td>
+                  <td>4B</td>
+                  <td>3.09</td><td>2.38</td><td>3.68</td><td>0.49</td>
+                  <td>3.47</td><td>2.84</td><td>3.91</td><td>0.68</td>
+                </tr>
+                <tr>
+                  <td>DeepSeek2-VL</td>
+                  <td>7B</td>
+                  <td>3.25</td><td>2.42</td><td>3.73</td><td>0.50</td>
+                  <td>3.63</td><td>2.89</td><td>4.11</td><td>0.52</td>
+                </tr>
+                <tr>
+                  <td>LLaVA-1.5</td>
+                  <td>7B</td>
+                  <td>2.71</td><td>2.05</td><td>3.03</td><td>0.54</td>
+                  <td>3.12</td><td>2.31</td><td>3.60</td><td>0.62</td>
+                </tr>
+                <tr>
+                  <td>Qwen2.5-VL*</td>
+                  <td>3B</td>
+                  <td>3.23</td><td>2.74</td><td>3.51</td><td>0.55</td>
+                  <td>3.91</td><td>3.41</td><td>4.27</td><td>0.65</td>
+                </tr>
+                <tr class="separator-row">
+                  <td rowspan="2" class="input-cell">Event-only</td>
+                  <td>EventGPT</td>
+                  <td>7B</td>
+                  <td>2.51</td><td>2.06</td><td>2.65</td><td>0.40</td>
+                  <td>2.82</td><td>2.34</td><td>3.08</td><td>0.39</td>
+                </tr>
+                <tr>
+                  <td>Qwen2.5-VL*</td>
+                  <td>3B</td>
+                  <td>2.74</td><td>2.48</td><td>2.97</td><td>0.45</td>
+                  <td>2.79</td><td>2.57</td><td>3.16</td><td>0.58</td>
+                </tr>
+                <tr class="highlight-row separator-row">
+                  <td class="input-cell">RGB+Event</td>
+                  <td><strong>RE-VLM</strong></td>
+                  <td>4B</td>
+                  <td><strong>3.68</strong></td><td><strong>3.12</strong></td><td><strong>3.95</strong></td><td><strong>0.63</strong></td>
+                  <td><strong>4.03</strong></td><td><strong>3.50</strong></td><td><strong>4.34</strong></td><td><strong>0.75</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-subsection">
+        <h3 class="subsection-title">Ablation Study</h3>
+        <div class="ablation-tables">
+          <div class="table-block">
+            <p class="table-title">Table 4. Ablation on PEOD-Chat</p>
+            <p class="table-subtitle">Impact of input modality and STAM module.</p>
+            <table class="results-table compact-table">
+              <thead>
+                <tr>
+                  <th>Input</th>
+                  <th>STAM</th>
+                  <th>CI</th>
+                  <th>DO</th>
+                  <th>CU</th>
+                  <th>Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>RGB-only</td><td>&mdash;</td><td>3.05</td><td>2.51</td><td>3.32</td><td>0.57</td></tr>
+                <tr><td>Event-only</td><td>&mdash;</td><td>2.82</td><td>2.57</td><td>3.09</td><td>0.48</td></tr>
+                <tr><td>RGB+Event</td><td>&#10007;</td><td>3.62</td><td>3.08</td><td>3.91</td><td>0.61</td></tr>
+                <tr class="highlight-row"><td>RGB+Event</td><td>&#10003;</td><td><strong>3.68</strong></td><td><strong>3.12</strong></td><td><strong>3.95</strong></td><td><strong>0.63</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-block">
+            <p class="table-title">Table 5. Ablation on RGBE-Chat</p>
+            <p class="table-subtitle">Impact of input modality and STAM module.</p>
+            <table class="results-table compact-table">
+              <thead>
+                <tr>
+                  <th>Input</th>
+                  <th>STAM</th>
+                  <th>CI</th>
+                  <th>DO</th>
+                  <th>CU</th>
+                  <th>Acc</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>RGB-only</td><td>&mdash;</td><td>3.97</td><td>3.46</td><td>4.32</td><td>0.73</td></tr>
+                <tr><td>Event-only</td><td>&mdash;</td><td>2.49</td><td>2.48</td><td>2.82</td><td>0.57</td></tr>
+                <tr><td>RGB+Event</td><td>&#10007;</td><td>4.01</td><td>3.47</td><td>4.35</td><td>0.74</td></tr>
+                <tr class="highlight-row"><td>RGB+Event</td><td>&#10003;</td><td><strong>4.03</strong></td><td><strong>3.50</strong></td><td><strong>4.34</strong></td><td><strong>0.75</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-subsection">
+        <h3 class="subsection-title">Cross-Validation with Open-Source Judge</h3>
+        <div class="table-block">
+          <p class="table-title">Table 6. Evaluation using Qwen3-Omni-30B as judge</p>
+          <p class="table-subtitle">Consistent trends with GPT-3.5-Turbo evaluation across all metrics.</p>
+          <table class="results-table compact-table">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Metric</th>
+                <th>Qwen2.5VL</th>
+                <th>EventGPT</th>
+                <th>RE-VLM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td rowspan="3" class="input-cell">Caption</td><td>CI</td><td>2.17</td><td>1.99</td><td class="best-val"><strong>3.29</strong></td></tr>
+              <tr><td>DO</td><td>1.82</td><td>1.89</td><td class="best-val"><strong>3.45</strong></td></tr>
+              <tr><td>CU</td><td>2.71</td><td>2.50</td><td class="best-val"><strong>3.85</strong></td></tr>
+              <tr class="separator-row"><td rowspan="2" class="input-cell">VQA</td><td>Ave</td><td>2.78</td><td>2.38</td><td class="best-val"><strong>3.43</strong></td></tr>
+              <tr><td>Acc</td><td>0.48</td><td>0.40</td><td class="best-val"><strong>0.62</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Qualitative Results -->
+  <section class="section section-alt" id="qualitative">
+    <div class="container">
+      <h2 class="section-title">Qualitative Results</h2>
+      <div class="qualitative-example">
+        <div class="qa-scene">
+          <div class="scene-image-placeholder">
+            <i class="fa-solid fa-car"></i>
+            <span>Overexposed Traffic Scene</span>
+          </div>
+        </div>
+        <div class="qa-content">
+          <div class="qa-question">
+            <div class="qa-label q-label">Q</div>
+            <p>Describe in detail what happened in the scene. And how many city buses are in the scene?</p>
+          </div>
+          <div class="qa-answer wrong-answer">
+            <div class="qa-label a-label">A</div>
+            <div class="answer-source">Qwen2.5-VL <span class="tag-rgb">RGB-only</span></div>
+            <p>In the scene, there is a small car and a larger vehicle... The lighting is dim, with the entrance to the garage being illuminated by natural light coming from outside. <strong class="wrong">There are no city buses visible in this scene.</strong></p>
+          </div>
+          <div class="qa-answer correct-answer">
+            <div class="qa-label a-label ours-label">A</div>
+            <div class="answer-source">RE-VLM <span class="tag-ours">RGB+Event</span></div>
+            <p>The scene shows a car driving on a road with other vehicles, including <strong class="correct">a city bus</strong>. The city bus is positioned behind the car and appears to be moving in the same direction...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qualitative-example">
+        <div class="qa-scene">
+          <div class="scene-image-placeholder event-scene">
+            <i class="fa-solid fa-palette"></i>
+            <span>Color Recognition Challenge</span>
+          </div>
+        </div>
+        <div class="qa-content">
+          <div class="qa-question">
+            <div class="qa-label q-label">Q</div>
+            <p>What is the color of the vehicle at the center?</p>
+          </div>
+          <div class="qa-answer wrong-answer">
+            <div class="qa-label a-label">A</div>
+            <div class="answer-source">EventGPT <span class="tag-event">Event-only</span></div>
+            <p>The vehicle at the center of the image is <strong class="wrong">black</strong>.</p>
+          </div>
+          <div class="qa-answer correct-answer">
+            <div class="qa-label a-label ours-label">A</div>
+            <div class="answer-source">RE-VLM <span class="tag-ours">RGB+Event</span></div>
+            <p>The vehicle at the center of the image is <strong class="correct">white</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="bibtex">
+    <div class="container">
+      <h2 class="section-title">BibTeX</h2>
+      <p class="method-text center-text">
+        If you find our work useful, please consider citing:
+      </p>
+      <div class="bibtex-block">
+        <button class="copy-btn" id="copyBibtex" title="Copy to clipboard">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+        <pre><code>@inproceedings{revlm2026,
+  title     = {RE-VLM: Event-Augmented Vision-Language Model
+               for Scene Understanding},
+  author    = {Author1 and Author2 and Author3
+               and Author4 and Author5},
+  booktitle = {Proceedings of the IEEE/CVF Conference on
+               Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>
+        This page template is inspired by
+        <a href="https://nerfies.github.io" target="_blank">Nerfies</a> and
+        <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>.
+      </p>
+    </div>
+  </footer>
+
+  <script src="static/js/main.js"></script>
+</body>
+</html>
