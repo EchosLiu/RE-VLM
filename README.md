@@ -4,11 +4,6 @@
 
 > RE-VLM is the first dual-stream vision-language model that jointly leverages RGB images and event streams for robust scene understanding across both normal and challenging conditions.
 
-```
-
-### Deployment
-
-This page is designed to be deployed via **GitHub Pages**. To enable:
 
 ## Citation
 
