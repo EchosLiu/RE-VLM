@@ -27,7 +27,7 @@
         <span>CVPR 2026</span>
       </div>
       <h1 class="title">
-        <span class="title-highlight">RE-VLM</span>: Event-Augmented Vision-Language Model for Scene Understanding
+        <span class="title-highlight">RE-VLM</span>: Event-Augmented Vision-Language<br/>Model for Scene Understanding
       </h1>
       <div class="authors">
         <span class="author">Author 1<sup>1</sup></span>
@@ -45,50 +45,21 @@
         <a href="#" class="hero-btn"><i class="fa-brands fa-github"></i> Code</a>
         <a href="#" class="hero-btn"><i class="fa-solid fa-database"></i> Dataset</a>
         <a href="#" class="hero-btn"><i class="fa-solid fa-video"></i> Video</a>
-        <a href="#" class="hero-btn"><i class="fa-solid fa-quote-left"></i> BibTeX</a>
+        <a href="#bibtex" class="hero-btn"><i class="fa-solid fa-quote-left"></i> BibTeX</a>
       </div>
     </div>
   </section>
 
   <!-- Teaser Figure -->
   <section class="teaser">
-    <div class="container">
-      <div class="teaser-figure">
-        <div class="figure-placeholder teaser-placeholder">
-          <div class="teaser-comparison">
-            <div class="teaser-col">
-              <div class="teaser-img-placeholder rgb-only">
-                <div class="modality-label">QwenVL <span class="tag-rgb">RGB-only</span></div>
-                <div class="placeholder-content">
-                  <i class="fa-solid fa-image"></i>
-                  <p>Struggles with low dynamic range, missing the pedestrian and crosswalk</p>
-                </div>
-              </div>
-            </div>
-            <div class="teaser-col">
-              <div class="teaser-img-placeholder event-only">
-                <div class="modality-label">EventGPT <span class="tag-event">Event-only</span></div>
-                <div class="placeholder-content">
-                  <i class="fa-solid fa-bolt"></i>
-                  <p>Captures structure and motion but lacks color and texture</p>
-                </div>
-              </div>
-            </div>
-            <div class="teaser-col highlight-col">
-              <div class="teaser-img-placeholder ours">
-                <div class="modality-label">RE-VLM <span class="tag-ours">RGB+Event</span></div>
-                <div class="placeholder-content">
-                  <i class="fa-solid fa-star"></i>
-                  <p>Complete description: green light, pedestrian, crosswalk, vehicles</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="container-wide">
+      <div class="figure-block">
+        <img src="static/images/fig1_intro.png" alt="RGB-Event complementarity: RGB-only, Event-only, and RGB+Event VLM comparison" class="paper-figure" loading="lazy" />
         <p class="figure-caption">
           <strong>Figure 1.</strong> Illustration of RGB-Event complementarity in a challenging low-light scene.
-          RGB-only VLM misses the pedestrian and crosswalk. Event-only VLM captures motion but lacks color.
-          Our <strong>RE-VLM</strong> provides a complete, accurate description by fusing both modalities.
+          <strong>RGB-based VLM</strong> struggles with low dynamic range, missing key scene elements.
+          <strong>Event-based VLM</strong> captures structure and motion but lacks color and texture.
+          Our <strong>RE-VLM</strong> combines both modalities to provide complete, accurate scene understanding.
         </p>
       </div>
     </div>
@@ -152,6 +123,7 @@
     <div class="container">
       <h2 class="section-title">Method</h2>
 
+      <!-- Overview Figure -->
       <div class="method-subsection">
         <h3 class="subsection-title">Overall Framework</h3>
         <p class="method-text">
@@ -161,143 +133,71 @@
           Module (STAM), and an LLM decoder.
         </p>
         <div class="figure-block">
-          <div class="figure-placeholder arch-placeholder">
-            <div class="arch-diagram">
-              <div class="arch-left">
-                <div class="arch-box data-box">
-                  <div class="arch-label">Data Pipeline</div>
-                  <div class="arch-flow">
-                    <div class="flow-item">RGB Frame</div>
-                    <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                    <div class="flow-item">RGB Graph</div>
-                    <div class="flow-arrow-merge">
-                      <i class="fa-solid fa-arrow-down-long"></i>
-                    </div>
-                  </div>
-                  <div class="arch-flow">
-                    <div class="flow-item">Event Stream</div>
-                    <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                    <div class="flow-item">Event Graph</div>
-                    <div class="flow-arrow-merge">
-                      <i class="fa-solid fa-arrow-down-long"></i>
-                    </div>
-                  </div>
-                  <div class="flow-item merge-item">Fusion Graph</div>
-                  <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                  <div class="flow-item output-item">Captions &amp; VQA</div>
-                </div>
-              </div>
-              <div class="arch-right">
-                <div class="arch-box model-box">
-                  <div class="arch-label">RE-VLM Architecture</div>
-                  <div class="model-components">
-                    <div class="model-row">
-                      <div class="component rgb-comp">RGB Encoder</div>
-                      <div class="component event-comp">Event Encoder</div>
-                    </div>
-                    <div class="model-row">
-                      <div class="component adapter-comp">RGB Adapter</div>
-                      <div class="component stam-comp">STAM</div>
-                      <div class="component adapter-comp">Event Adapter</div>
-                    </div>
-                    <div class="model-row">
-                      <div class="component llm-comp">Large Language Model (LLM)</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <img src="static/images/fig2_overview.png" alt="RE-VLM overall framework: data generation pipeline, datasets, and model architecture" class="paper-figure" loading="lazy" />
           <p class="figure-caption">
-            <strong>Figure 2.</strong> Overview of RE-VLM. <em>Left:</em> Graph-driven pipeline converts synchronized RGB frames and event streams
-            into a fused graph for synthesizing caption and QA supervision. <em>Right:</em> The RE-VLM model fuses static RGB appearance
-            with dynamic event cues for robust captioning and VQA.
+            <strong>Figure 2.</strong> Construction of RE-VLM: data generation pipeline and model.
+            <em>Left:</em> A graph-driven pipeline converts synchronized RGB frames and event streams into a fused graph, extracts verifiable scene facts, and synthesizes reliable caption and QA supervision.
+            <em>Center:</em> Representative examples from PEOD-Chat and RGBE-Chat.
+            <em>Right:</em> The RE-VLM model fuses static RGB appearance with dynamic event cues via STAM.
           </p>
         </div>
       </div>
 
+      <!-- Data Pipeline -->
       <div class="method-subsection">
         <h3 class="subsection-title">Graph-Driven Data Generation</h3>
         <p class="method-text">
           To address the scarcity of RGB-Event-Text training data, we introduce a degradation-adaptive data generation pipeline.
           A scene graph serves as a verifiable intermediate representation, explicitly encoding degradation cues to guide modality weighting.
+          The pipeline converts synchronized RGB and event streams into graph-structured scene facts and then synthesizes caption and VQA supervision.
         </p>
-        <div class="pipeline-steps">
-          <div class="pipeline-step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <h4>Event Graph Generation</h4>
-              <p>Locate each RGB keyframe, select an N&times;33ms event window, reconstruct into grayscale frames, and generate a structured description following subject&ndash;motion&ndash;place&ndash;relation schema.</p>
-            </div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <h4>RGB Graph Generation</h4>
-              <p>Build the RGB graph on the synchronized keyframe, focusing on appearance and static structure (color, texture, shape), while annotating degradation phenomena.</p>
-            </div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <h4>Degradation-Aware Fusion</h4>
-              <p>LLM-based fusion that arbitrates between event and RGB graphs based on degradation labels, using field-level consensus and confidence scoring.</p>
-            </div>
-          </div>
-          <div class="pipeline-step">
-            <div class="step-number">4</div>
-            <div class="step-content">
-              <h4>Caption &amp; QA Synthesis</h4>
-              <p>Feed the fused graph into a text-generation model to produce captions and up to three VQA items per sample, followed by human-audited quality correction.</p>
-            </div>
-          </div>
+        <div class="figure-block">
+          <img src="static/images/fig3_data_pipeline.png" alt="Data generation pipeline: Event/RGB graph generation, fusion, and QA synthesis" class="paper-figure" loading="lazy" />
+          <p class="figure-caption">
+            <strong>Figure 3.</strong> Data generation pipeline overview.
+            From reconstructed event frames and RGB images, two modality-specific graphs are constructed.
+            A degradation-aware fusion then merges them into a single RGB-Event graph (nodes: entities, edges: relations).
+            Finally, captions and VQA items are synthesized from the fused graph.
+          </p>
         </div>
       </div>
 
+      <!-- Model Architecture -->
+      <div class="method-subsection">
+        <h3 class="subsection-title">Model Architecture</h3>
+        <p class="method-text">
+          RE-VLM leverages the event stream's high temporal resolution and extended dynamic range together with
+          the RGB image's static appearance. The architecture comprises an RGB vision encoder, an event vision encoder,
+          a lightweight Spatio-Temporal Alignment Module (STAM, training-time only), two modality adapters, and an LLM decoder.
+        </p>
+        <div class="figure-block">
+          <img src="static/images/fig4_architecture.png" alt="RE-VLM model architecture with STAM, dual encoders, and LLM" class="paper-figure" loading="lazy" />
+          <p class="figure-caption">
+            <strong>Figure 4.</strong> RE-VLM model architecture. Synchronized RGB and event streams are encoded by parallel vision encoders.
+            During training, a Spatio-Temporal Alignment Module (STAM) provides alignment signals and a relation loss.
+            During inference, event features are projected (event adapter) and, together with RGB tokens (RGB adapter), are fed to the LLM.
+          </p>
+        </div>
+      </div>
+
+      <!-- Training Pipeline -->
       <div class="method-subsection">
         <h3 class="subsection-title">Progressive Training Strategy</h3>
         <p class="method-text">
           RE-VLM adopts a concise three-stage curriculum that first grounds the event stream to language, then aligns
           it with the RGB representation via STAM, and finally performs lightweight instruction tuning on the LLM.
         </p>
-        <div class="training-stages">
-          <div class="stage">
-            <div class="stage-header">
-              <span class="stage-num">Stage 1</span>
-              <span class="stage-name">Event–Language Alignment</span>
-            </div>
-            <p>Train event encoder and adapter on Event-Text caption pairs while keeping LLM and RGB branch frozen.</p>
-            <div class="stage-meta">
-              <span><i class="fa-solid fa-database"></i> 1,300K pairs</span>
-              <span><i class="fa-solid fa-sliders"></i> LR: 1&times;10<sup>-4</sup></span>
-            </div>
-          </div>
-          <div class="stage-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          <div class="stage">
-            <div class="stage-header">
-              <span class="stage-num">Stage 2</span>
-              <span class="stage-name">Event–RGB Alignment</span>
-            </div>
-            <p>Align event branch with frozen RGB branch using STAM module and relation losses.</p>
-            <div class="stage-meta">
-              <span><i class="fa-solid fa-database"></i> 600K pairs</span>
-              <span><i class="fa-solid fa-sliders"></i> LR: 1&times;10<sup>-4</sup></span>
-            </div>
-          </div>
-          <div class="stage-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          <div class="stage">
-            <div class="stage-header">
-              <span class="stage-num">Stage 3</span>
-              <span class="stage-name">Instruction Tuning</span>
-            </div>
-            <p>Freeze visual branches and STAM; attach LoRA adapters to LLM for supervised fine-tuning.</p>
-            <div class="stage-meta">
-              <span><i class="fa-solid fa-database"></i> 120K samples</span>
-              <span><i class="fa-solid fa-sliders"></i> LR: 2&times;10<sup>-4</sup></span>
-            </div>
-          </div>
+        <div class="figure-block">
+          <img src="static/images/fig5_training.png" alt="Three-stage training pipeline: Event-Language alignment, Event-RGB alignment, Instruction tuning" class="paper-figure" loading="lazy" />
+          <p class="figure-caption">
+            <strong>Figure 5.</strong> Training pipeline. Three compact stages:
+            (1) Initial event&ndash;language alignment,
+            (2) Align the event and RGB modalities with STAM,
+            (3) End-to-end instruction tuning.
+          </p>
         </div>
       </div>
+
     </div>
   </section>
 
@@ -338,6 +238,28 @@
             </ul>
           </div>
         </div>
+      </div>
+
+      <!-- Dataset Examples -->
+      <div class="dataset-examples">
+        <h3 class="subsection-title center-text">Dataset Examples</h3>
+        <div class="examples-grid">
+          <div class="example-item">
+            <img src="static/images/dataset_example1.png" alt="PEOD-Chat example: two-lane road with vehicles" loading="lazy" />
+          </div>
+          <div class="example-item">
+            <img src="static/images/dataset_example2.png" alt="PEOD-Chat example: nighttime driving with traffic lights" loading="lazy" />
+          </div>
+          <div class="example-item">
+            <img src="static/images/dataset_example3.png" alt="PEOD-Chat example: motorcyclists and pedestrians on road" loading="lazy" />
+          </div>
+          <div class="example-item">
+            <img src="static/images/dataset_example4.png" alt="PEOD-Chat example: tunnel driving with traffic light" loading="lazy" />
+          </div>
+        </div>
+        <p class="figure-caption">
+          Representative samples from the datasets. Each example includes synchronized RGB-Event data with generated captions and VQA pairs.
+        </p>
       </div>
 
       <div class="table-block">
@@ -545,54 +467,18 @@
   <section class="section section-alt" id="qualitative">
     <div class="container">
       <h2 class="section-title">Qualitative Results</h2>
-      <div class="qualitative-example">
-        <div class="qa-scene">
-          <div class="scene-image-placeholder">
-            <i class="fa-solid fa-car"></i>
-            <span>Overexposed Traffic Scene</span>
-          </div>
-        </div>
-        <div class="qa-content">
-          <div class="qa-question">
-            <div class="qa-label q-label">Q</div>
-            <p>Describe in detail what happened in the scene. And how many city buses are in the scene?</p>
-          </div>
-          <div class="qa-answer wrong-answer">
-            <div class="qa-label a-label">A</div>
-            <div class="answer-source">Qwen2.5-VL <span class="tag-rgb">RGB-only</span></div>
-            <p>In the scene, there is a small car and a larger vehicle... The lighting is dim, with the entrance to the garage being illuminated by natural light coming from outside. <strong class="wrong">There are no city buses visible in this scene.</strong></p>
-          </div>
-          <div class="qa-answer correct-answer">
-            <div class="qa-label a-label ours-label">A</div>
-            <div class="answer-source">RE-VLM <span class="tag-ours">RGB+Event</span></div>
-            <p>The scene shows a car driving on a road with other vehicles, including <strong class="correct">a city bus</strong>. The city bus is positioned behind the car and appears to be moving in the same direction...</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="qualitative-example">
-        <div class="qa-scene">
-          <div class="scene-image-placeholder event-scene">
-            <i class="fa-solid fa-palette"></i>
-            <span>Color Recognition Challenge</span>
-          </div>
-        </div>
-        <div class="qa-content">
-          <div class="qa-question">
-            <div class="qa-label q-label">Q</div>
-            <p>What is the color of the vehicle at the center?</p>
-          </div>
-          <div class="qa-answer wrong-answer">
-            <div class="qa-label a-label">A</div>
-            <div class="answer-source">EventGPT <span class="tag-event">Event-only</span></div>
-            <p>The vehicle at the center of the image is <strong class="wrong">black</strong>.</p>
-          </div>
-          <div class="qa-answer correct-answer">
-            <div class="qa-label a-label ours-label">A</div>
-            <div class="answer-source">RE-VLM <span class="tag-ours">RGB+Event</span></div>
-            <p>The vehicle at the center of the image is <strong class="correct">white</strong>.</p>
-          </div>
-        </div>
+      <p class="method-text center-text">
+        Qualitative VQA comparison in an overexposed traffic scene. RGB-only and event-only baselines miss the city bus or
+        fail to capture the color, while RE-VLM correctly identifies both.
+      </p>
+      <div class="figure-block">
+        <img src="static/images/fig6_qualitative.png" alt="Qualitative VQA comparison showing RE-VLM correctly identifies city bus and vehicle color" class="paper-figure" loading="lazy" />
+        <p class="figure-caption">
+          <strong>Figure 6.</strong> Qualitative VQA comparison in an overexposed traffic scene.
+          RGB-only VLM (Qwen2.5-VL) fails to detect the city bus under overexposure.
+          Event-only VLM (EventGPT) cannot determine appearance attributes like color.
+          Our <strong>RE-VLM</strong> correctly identifies both the city bus and the white vehicle color by fusing complementary RGB and event cues.
+        </p>
       </div>
     </div>
   </section>
