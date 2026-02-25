@@ -10,28 +10,6 @@
 
 This page is designed to be deployed via **GitHub Pages**. To enable:
 
-### Customization
-
-- **Authors & Affiliations**: Edit the hero section in `index.html`
-- **Figures**: Replace placeholder content with actual paper figures in `static/images/`
-- **BibTeX**: Update the citation block in `index.html`
-- **Links**: Update Paper, Code, Dataset, Video links in the hero section
-
-## Project Structure
-
-```
-├── index.html              # Main page
-├── static/
-│   ├── css/
-│   │   └── style.css       # Styling
-│   ├── js/
-│   │   └── main.js         # Interactions (copy BibTeX, scroll animations)
-│   ├── images/             # Paper figures (add your own)
-│   └── videos/             # Demo videos (optional)
-├── README.md
-└── LICENSE
-```
-
 ## Citation
 
 ```bibtex
