@@ -17,8 +17,12 @@ GitHub Pages is deployed via `.github/workflows/deploy.yml` (GitHub Actions). It
 - `index.html` — single-page project site
 - `static/css/style.css` — all styling
 - `static/js/main.js` — BibTeX copy, scroll animations
-- `static/images/` — place paper figures here (PNG/JPG/WebP)
+- `static/images/` — paper figures (PNG, converted from `figs/*.pdf` at 3x zoom)
+- `figs/` — original PDF figure sources from the paper
+- `.nojekyll` — tells GitHub Pages to skip Jekyll and serve static files directly
 
 ### Notes
 - No linter or test framework is configured; validation is visual (open in browser).
 - All external resources (Google Fonts, Font Awesome) are loaded via CDN — network access is required for full rendering.
+- To re-convert figures from PDF: `pip install pymupdf` then use `fitz` to render pages at desired zoom.
+- GitHub Pages deployment: go to **Settings → Pages → Source: Deploy from a branch → main / (root)** — works out of the box thanks to `.nojekyll`.
