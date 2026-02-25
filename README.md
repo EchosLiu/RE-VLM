@@ -4,29 +4,11 @@
 
 > RE-VLM is the first dual-stream vision-language model that jointly leverages RGB images and event streams for robust scene understanding across both normal and challenging conditions.
 
-## Project Page
-
-This repository hosts the **project page** for the RE-VLM paper. The page is built with plain HTML/CSS/JS and can be served locally or deployed via GitHub Pages.
-
-### Local Development
-
-```bash
-# Start a local development server
-python3 -m http.server 8080
-
-# Then open http://localhost:8080 in your browser
 ```
 
 ### Deployment
 
 This page is designed to be deployed via **GitHub Pages**. To enable:
-
-1. Go to repository **Settings** → **Pages**
-2. Under "Source", select **Deploy from a branch**
-3. Choose the `main` branch and `/ (root)` folder
-4. Click **Save**
-
-The page will be available at `https://<username>.github.io/RE-VLM/`.
 
 ### Customization
 
@@ -53,15 +35,7 @@ The page will be available at `https://<username>.github.io/RE-VLM/`.
 ## Citation
 
 ```bibtex
-@inproceedings{revlm2026,
-  title     = {RE-VLM: Event-Augmented Vision-Language Model
-               for Scene Understanding},
-  author    = {Author1 and Author2 and Author3
-               and Author4 and Author5},
-  booktitle = {Proceedings of the IEEE/CVF Conference on
-               Computer Vision and Pattern Recognition (CVPR)},
-  year      = {2026}
-}
+
 ```
 
 ## License
