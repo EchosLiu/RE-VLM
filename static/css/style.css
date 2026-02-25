@@ -167,6 +167,18 @@ img {
   margin-right: 2px;
 }
 
+.author-notes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  font-style: italic;
+  animation: fadeInUp 0.6s ease-out 0.28s both;
+}
+
 .hero-links {
   display: flex;
   flex-wrap: wrap;
